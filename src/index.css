@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  span,
+  input,
+  button {
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+}
+
+@layer components {
+  .text-h-xl {
+    @apply text-xl font-bold leading-xl;
+  }
+
+  .text-h-l {
+    @apply text-l font-bold leading-l;
+  }
+
+  .text-h-m {
+    @apply text-m font-bold leading-m;
+  }
+
+  .text-h-s {
+    @apply text-s font-bold leading-s tracking-[2.4px];
+  }
+
+  .text-b-l {
+    @apply text-[13px] font-medium leading-l;
+  }
+
+  .text-b-m {
+    @apply text-s font-bold leading-m;
+  }
+}
