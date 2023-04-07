@@ -4,7 +4,9 @@ export default ({ boardName, isSelected }) => {
   return (
     <li
       className={`flex items-center gap-3 pl-6 w-full py-[14px] rounded-r-full cursor-pointer group ${
-        isSelected ? "bg-primary-400" : "hover:dark:bg-neutral-100"
+        isSelected
+          ? "bg-primary-400"
+          : "hover:dark:bg-neutral-100 hover:bg-neutral-150"
       }`}
     >
       <div>

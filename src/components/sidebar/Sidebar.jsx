@@ -20,7 +20,7 @@ export default () => {
             />
           );
         })}
-        <li className="flex items-center gap-3 pl-6 w-full py-[14px] rounded-r-full cursor-pointer">
+        <li className="flex items-center gap-3 pl-6 w-full py-[14px] rounded-r-full cursor-pointer hover:bg-neutral-150">
           <IconBoard fill="#635FC7" />
           <p className="text-primary-400 text-h-m">+ Create New Board</p>
         </li>
