@@ -1,5 +1,4 @@
 import { ReactComponent as IconBoard } from "@/assets/icons/icon-board.svg";
-import { ReactComponent as IconShowSidebar } from "@/assets/icons/icon-show-sidebar.svg";
 import { ReactComponent as IconHideSidebar } from "@/assets/icons/icon-hide-sidebar.svg";
 import { BiLogOut } from "react-icons/bi";
 
