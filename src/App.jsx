@@ -1,5 +1,7 @@
 import BoardList from "@/components/boardList/BoardList";
 import Header from "@/components/header/Header";
+import Board from "@/components/board/Board";
+
 import { useAppStore, useBoardListShownStore } from "@/assets/zustand/AppStore";
 import { ReactComponent as LogoDark } from "@/assets/icons/logo-dark.svg";
 import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
@@ -29,6 +31,7 @@ export default () => {
 
         <div className="flex min-h-screen w-full flex-col bg-neutral-150 dark:bg-neutral-900">
           <Header />
+          <Board />
         </div>
       </div>
 

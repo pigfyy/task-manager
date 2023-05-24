@@ -17,7 +17,7 @@ export default () => {
   return (
     <div className="flex">
       <div
-        className={`flex items-center border-neutral-200 bg-neutral-100 pl-4 dark:border-neutral-700 dark:bg-neutral-800 md:border-r-[1px] ${
+        className={`flex items-center border-b-[1px] border-neutral-200 bg-neutral-100 pl-4 dark:border-neutral-700 dark:bg-neutral-800 md:border-r-[1px] ${
           boardListShown ? "md:border-none md:px-0" : "md:px-6"
         }`}
       >
@@ -35,7 +35,7 @@ export default () => {
           </div>
         )}
       </div>
-      <div className="flex flex-grow items-center gap-4 bg-neutral-100 px-4 py-5 dark:bg-neutral-800 md:px-6">
+      <div className="flex flex-grow items-center gap-4 border-b-[1px] border-neutral-200 bg-neutral-100 px-4 py-5 dark:border-neutral-700 dark:bg-neutral-800 md:px-6">
         <div className="flex gap-2">
           <p className="text-h-l dark:text-neutral-100">Platform Launch</p>
           {width < 768 && <ToggleMobileBoardList />}

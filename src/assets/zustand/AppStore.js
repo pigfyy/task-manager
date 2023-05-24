@@ -18,7 +18,7 @@ export const useAppStore = create(
 
 export const useBoardListShownStore = create(
   devtools((set) => ({
-    boardListShown: false,
+    boardListShown: true,
     setBoardListShown: (newValue) => set(() => ({ boardListShown: newValue })),
   }))
 );
@@ -39,6 +39,10 @@ export const useColumnStore = create(
     [crypto.randomUUID()]: {
       name: "To Do",
       boardId: "test-uuid1",
+    },
+    [crypto.randomUUID()]: {
+      name: "In Progress",
+      boardId: "test-uuid2",
     },
   }))
 );

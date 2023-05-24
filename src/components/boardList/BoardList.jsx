@@ -33,7 +33,7 @@ export default () => {
           <ThemeSwitcher />
         </div>
         <button
-          className="group flex w-full cursor-pointer items-center gap-3 rounded-r-full py-[14px] pl-6 hover:bg-neutral-150 hover:dark:bg-neutral-100"
+          className="group hidden w-full cursor-pointer items-center gap-3 rounded-r-full py-[14px] pl-6 hover:bg-neutral-150 hover:dark:bg-neutral-100 md:flex"
           onClick={() => {
             useBoardListShownStore.setState((state) => ({
               boardListShown: false,
