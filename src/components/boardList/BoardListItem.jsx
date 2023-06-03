@@ -1,7 +1,7 @@
 import { ReactComponent as IconBoard } from "@/assets/icons/icon-board.svg";
-import { useBoardStore } from "@/assets/zustand/AppStore";
+import { useBoardStore } from "@/lib/zustand/AppStore";
 
-export default ({ boardId }) => {
+export default function BoardListItem({ boardId }) {
   const [boards, selectedBoard] = useBoardStore((state) => [
     state.boards,
     state.selectedBoard,
@@ -12,10 +12,10 @@ export default ({ boardId }) => {
 
   return (
     <li
-      className={`flex items-center gap-3 pl-6 w-full py-[14px] rounded-r-full cursor-pointer group ${
+      className={`group flex w-full cursor-pointer items-center gap-3 rounded-r-full py-[14px] pl-6 ${
         isSelected
           ? "bg-primary-400"
-          : "hover:dark:bg-neutral-100 hover:bg-neutral-150"
+          : "hover:bg-neutral-150 hover:dark:bg-neutral-100"
       }`}
       onClick={() => useBoardStore.setState({ selectedBoard: boardId })}
     >
@@ -24,7 +24,7 @@ export default ({ boardId }) => {
           <IconBoard fill={isSelected ? "white" : "#828FA3"} />
         </div>
         {!isSelected && (
-          <div className="group-hover:block hidden">
+          <div className="hidden group-hover:block">
             <IconBoard fill={"#635FC7"} />
           </div>
         )}
@@ -40,4 +40,4 @@ export default ({ boardId }) => {
       </p>
     </li>
   );
-};
+}

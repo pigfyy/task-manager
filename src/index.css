@@ -40,3 +40,9 @@
     @apply text-s font-bold leading-m;
   }
 }
+
+@layer utilities {
+  .popup-overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}

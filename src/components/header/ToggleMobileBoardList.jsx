@@ -11,11 +11,11 @@ import {
   useInteractions,
   FloatingFocusManager,
 } from "@floating-ui/react";
-import { useBoardListShownStore } from "@/assets/zustand/AppStore";
+import { useBoardListShownStore } from "@/lib/zustand/AppStore";
 import { ReactComponent as IconChevronUp } from "@/assets/icons/icon-chevron-up.svg";
 import { ReactComponent as IconChevronDown } from "@/assets/icons/icon-chevron-down.svg";
 
-export default () => {
+export default function ToggleMobileBoardList() {
   const [boardListShown, setBoardListShown] = useBoardListShownStore(
     (state) => [state.boardListShown, state.setBoardListShown]
   );
@@ -58,4 +58,4 @@ export default () => {
       </FloatingFocusManager>
     </>
   );
-};
+}

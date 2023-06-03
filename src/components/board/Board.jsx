@@ -1,11 +1,11 @@
 import Dot from "./Dot";
-import { useColumnStore } from "@/assets/zustand/AppStore";
+import { useColumnStore } from "@/lib/zustand/AppStore";
 
-export default () => {
+export default function Board() {
   const columns = useColumnStore();
 
   return (
-    <div className="flex gap-6 overflow-scroll p-6">
+    <div className="flex flex-grow gap-6 overflow-scroll p-6">
       {Object.entries(columns).map(([key, value]) => {
         return (
           <div className="flex flex-col gap-6" key={key}>
@@ -38,4 +38,4 @@ export default () => {
       })}
     </div>
   );
-};
+}

@@ -4,11 +4,11 @@ import { ReactComponent as IconVerticalEllipsis } from "@/assets/icons/icon-vert
 import { ReactComponent as LogoDark } from "@/assets/icons/logo-dark.svg";
 import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
 
-import { useBoardListShownStore } from "@/assets/zustand/AppStore";
+import { useBoardListShownStore } from "@/lib/zustand/AppStore";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import ToggleMobileBoardList from "@/components/header/ToggleMobileBoardList";
 
-export default () => {
+export default function Header() {
   const boardListShown = useBoardListShownStore(
     (state) => state.boardListShown
   );
@@ -49,4 +49,4 @@ export default () => {
       </div>
     </div>
   );
-};
+}
