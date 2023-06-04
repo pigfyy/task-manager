@@ -7,6 +7,7 @@ import { ReactComponent as LogoDark } from "@/assets/icons/logo-dark.svg";
 import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
 import { ReactComponent as IconShowSidebar } from "@/assets/icons/icon-show-sidebar.svg";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
+import { useEffect } from "react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase/index";
@@ -20,11 +21,19 @@ export default function App() {
   const width = useWindowWidth();
   const [user, loading] = useAuthState(auth);
 
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
   return (
     <>
       {!loading &&
         (user ? (
-          <div className={`min-h-screen ${isDarkMode ? "dark" : ""}`}>
+          <div className={`min-h-screen`}>
             {/* Board List for Desktop */}
             <div className="flex">
               {boardListShown && (
