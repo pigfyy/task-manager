@@ -2,7 +2,12 @@ import BoardList from "@/components/boardList/BoardList";
 import Header from "@/components/header/Header";
 import Board from "@/components/board/Board";
 
-import { useAppStore, useBoardListShownStore } from "@/lib/zustand/AppStore";
+import {
+  useAppStore,
+  useBoardListShownStore,
+  useBoardStore,
+  useColumnStore,
+} from "@/lib/zustand/AppStore";
 import { ReactComponent as LogoDark } from "@/assets/icons/logo-dark.svg";
 import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
 import { ReactComponent as IconShowSidebar } from "@/assets/icons/icon-show-sidebar.svg";
@@ -10,8 +15,53 @@ import { useWindowWidth } from "@react-hook/window-size/throttled";
 import { useEffect } from "react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/lib/firebase/index";
+import { auth, db } from "@/lib/firebase/index";
 import SignIn from "@/components/SignIn";
+import { query, collection } from "firebase/firestore";
+import { useCollection } from "react-firebase-hooks/firestore";
+
+const useBoards = () => {
+  const [user] = useAuthState(auth);
+  const q = user ? query(collection(db, "users", user.uid, "boards")) : null;
+
+  const [value, loading, error] = useCollection(q, {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+
+  useEffect(() => {
+    if (value)
+      useBoardStore.setState({
+        boards: value.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+      });
+  }, [value]);
+
+  return [value, loading, error];
+};
+
+const useColumns = () => {
+  const [user] = useAuthState(auth);
+  const selectedBoard = useBoardStore((state) => state.selectedBoard);
+
+  const q =
+    user && selectedBoard
+      ? query(
+          collection(db, "users", user.uid, "boards", selectedBoard, "columns")
+        )
+      : null;
+
+  const [value, loading, error] = useCollection(q, {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+
+  useEffect(() => {
+    if (value)
+      useColumnStore.setState({
+        columns: value.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+      });
+  }, [value]);
+
+  return [value, loading, error];
+};
 
 export default function App() {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
@@ -20,6 +70,8 @@ export default function App() {
   );
   const width = useWindowWidth();
   const [user, loading] = useAuthState(auth);
+  useBoards();
+  useColumns();
 
   useEffect(() => {
     if (isDarkMode) {

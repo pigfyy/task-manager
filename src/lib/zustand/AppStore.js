@@ -25,24 +25,40 @@ export const useBoardListShownStore = create(
 
 export const useBoardStore = create(
   devtools((set) => ({
-    boards: {
-      ["test-uuid1"]: "Platform Launch",
-      ["test-uuid2"]: "Marketing Plan",
-      ["test-uuid3"]: "Roadmap",
-    },
+    boards: [],
     selectedBoard: "",
+    setBoards: (newValue) => set(() => ({ boards: newValue })),
+    setSelectedBoard: (newValue) => set(() => ({ selectedBoard: newValue })),
   }))
 );
 
 export const useColumnStore = create(
   devtools((set) => ({
-    [crypto.randomUUID()]: {
-      name: "To Do",
-      boardId: "test-uuid1",
-    },
-    [crypto.randomUUID()]: {
-      name: "In Progress",
-      boardId: "test-uuid2",
-    },
+    columns: [],
+  }))
+);
+
+export const useEditBoardStore = create(
+  devtools((set) => ({
+    isOpen: false,
+    name: "",
+    columns: [
+      { name: "", color: "#A8A4FF" },
+      { name: "", color: "#A8A4FF" },
+    ],
+    setName: (newValue) => set(() => ({ name: newValue })),
+    setColumns: (newValue) => set(() => ({ columns: newValue })),
+    addColumn: () =>
+      set((state) => ({
+        columns: [...state.columns, { name: "", color: "#A8A4FF" }],
+      })),
+    reset: () =>
+      set(() => ({
+        name: "",
+        columns: [
+          { name: "", color: "#A8A4FF" },
+          { name: "", color: "#A8A4FF" },
+        ],
+      })),
   }))
 );

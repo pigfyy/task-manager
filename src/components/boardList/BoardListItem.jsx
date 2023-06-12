@@ -1,13 +1,9 @@
 import { ReactComponent as IconBoard } from "@/assets/icons/icon-board.svg";
 import { useBoardStore } from "@/lib/zustand/AppStore";
 
-export default function BoardListItem({ boardId }) {
-  const [boards, selectedBoard] = useBoardStore((state) => [
-    state.boards,
-    state.selectedBoard,
-  ]);
+export default function BoardListItem({ boardId, boardName }) {
+  const selectedBoard = useBoardStore((state) => state.selectedBoard);
 
-  const boardName = boards[boardId];
   const isSelected = selectedBoard === boardId;
 
   return (
