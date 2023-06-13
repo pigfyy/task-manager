@@ -8,28 +8,19 @@ import {
   orderBy,
   query,
   getDocs,
+  setDoc,
 } from "firebase/firestore";
 
-export const createBoard = async (name, columns) => {
+export const createBoard = async (id, name, columns) => {
   try {
-    const docRef = await addDoc(
-      collection(db, "users", auth.currentUser.uid, "boards"),
-      {
-        name: name,
-      }
-    );
+    await setDoc(doc(db, "users", auth.currentUser.uid, "boards", id), {
+      name: name,
+    });
 
     const batch = writeBatch(db);
     columns.forEach((column, i) => {
       const columnRef = doc(
-        collection(
-          db,
-          "users",
-          auth.currentUser.uid,
-          "boards",
-          docRef.id,
-          "columns"
-        )
+        collection(db, "users", auth.currentUser.uid, "boards", id, "columns")
       );
       if (column.name)
         batch.set(columnRef, {
@@ -40,8 +31,6 @@ export const createBoard = async (name, columns) => {
     });
 
     await batch.commit();
-
-    return docRef.id;
   } catch (e) {
     console.error("Error adding document: ", e);
   }

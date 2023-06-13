@@ -1,6 +1,7 @@
 import BoardList from "@/components/boardList/BoardList";
 import Header from "@/components/header/Header";
 import Board from "@/components/board/Board";
+import EditBoard from "@/components/boardList/EditBoard";
 
 import {
   useAppStore,
@@ -17,7 +18,7 @@ import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/lib/firebase/index";
 import SignIn from "@/components/SignIn";
-import { query, collection } from "firebase/firestore";
+import { query, collection, orderBy } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 
 const useBoards = () => {
@@ -45,7 +46,8 @@ const useColumns = () => {
   const q =
     user && selectedBoard
       ? query(
-          collection(db, "users", user.uid, "boards", selectedBoard, "columns")
+          collection(db, "users", user.uid, "boards", selectedBoard, "columns"),
+          orderBy("position", "asc")
         )
       : null;
 
@@ -68,6 +70,10 @@ export default function App() {
   const [boardListShown, setBoardListShown] = useBoardListShownStore(
     (state) => [state.boardListShown, state.setBoardListShown]
   );
+  const [boards, selectedBoard] = useBoardStore((state) => [
+    state.boards,
+    state.selectedBoard,
+  ]);
   const width = useWindowWidth();
   const [user, loading] = useAuthState(auth);
   useBoards();
@@ -81,8 +87,17 @@ export default function App() {
     }
   }, [isDarkMode]);
 
+  useEffect(() => {
+    if (!selectedBoard) {
+      if (boards.length > 0) {
+        useBoardStore.setState({ selectedBoard: boards[0].id });
+      }
+    }
+  }, [selectedBoard, boards]);
+
   return (
     <>
+      <EditBoard />
       {!loading &&
         (user ? (
           <div className={`min-h-screen`}>
@@ -90,7 +105,7 @@ export default function App() {
             <div className="flex">
               {boardListShown && (
                 <div
-                  className={`hidden min-h-screen flex-shrink-0 flex-col border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 md:flex md:border-r-[1px]`}
+                  className={`hidden h-screen flex-shrink-0 flex-col border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 md:flex md:border-r-[1px]`}
                 >
                   <div className="mx-6 mb-7 mt-5">
                     {isDarkMode ? <LogoLight /> : <LogoDark />}
@@ -99,7 +114,7 @@ export default function App() {
                 </div>
               )}
 
-              <div className="flex min-h-screen w-full flex-col bg-neutral-150 dark:bg-neutral-900">
+              <div className="flex h-screen w-full flex-col bg-neutral-150 dark:bg-neutral-900">
                 <Header />
                 <Board />
               </div>

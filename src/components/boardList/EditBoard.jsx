@@ -1,22 +1,23 @@
 import { useBoardStore, useEditBoardStore } from "@/lib/zustand/AppStore";
 import { Dialog, Transition, Popover } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
 import { ReactComponent as IconCross } from "@/assets/icons/icon-cross.svg";
 
 import { createBoard } from "@/lib/firebase/boardStore";
 
-export default function EditBoard() {
-  const [isOpen, name, columns, setName, setColumns, addColumn, reset] =
-    useEditBoardStore((state) => [
-      state.isOpen,
-      state.name,
-      state.columns,
-      state.setName,
-      state.setColumns,
-      state.addColumn,
-      state.reset,
-    ]);
+export default function EditBoard(props) {
+  const {
+    isOpen,
+    name,
+    id,
+    isNew,
+    columns,
+    setName,
+    setColumns,
+    addColumn,
+    reset,
+  } = useEditBoardStore();
   const setSelectedBoard = useBoardStore((state) => state.setSelectedBoard);
 
   function closeModal() {
@@ -24,28 +25,18 @@ export default function EditBoard() {
     reset();
   }
 
-  const handleCreateBoard = async () => {
-    const id = await createBoard(name, columns);
-    if (id) {
-      setSelectedBoard(id);
-      closeModal();
+  useEffect(() => {
+    if (!props.id && isOpen && isNew) {
+      useEditBoardStore.setState({ id: crypto.randomUUID() });
     }
-  };
+  }, [props.id, isOpen, isNew]);
 
-  // checking if the board is new or not
-  const isNewBoard =
-    !name &&
-    columns !==
-      [
-        {
-          name: "",
-          color: "#A8A4FF",
-        },
-        {
-          name: "",
-          color: "#A8A4FF",
-        },
-      ];
+  const handleSubmit = async () => {
+    console.log("test");
+    await createBoard(id, name, columns);
+    setSelectedBoard(id || "");
+    closeModal();
+  };
 
   return (
     <>
@@ -80,7 +71,7 @@ export default function EditBoard() {
                   <div className="flex w-[480px] max-w-[90vw] justify-center rounded-md bg-neutral-100 dark:bg-neutral-800">
                     <div className="flex w-5/6 flex-col gap-6 bg-neutral-100 py-8 dark:bg-neutral-800">
                       <p className="text-h-l dark:text-neutral-100">
-                        {isNewBoard ? "Create New Board" : "Edit Board"}
+                        {isNew ? "Create New Board" : "Edit Board"}
                       </p>
                       <div className="flex flex-col gap-2">
                         <p className="text-b-m text-neutral-400 dark:text-neutral-100">
@@ -162,9 +153,9 @@ export default function EditBoard() {
                       </div>
                       <button
                         className="w-full rounded-[20px] bg-primary-400 px-2 py-2 text-[13px] font-bold leading-l text-neutral-100 hover:bg-primary-200"
-                        onClick={handleCreateBoard}
+                        onClick={handleSubmit}
                       >
-                        {isNewBoard ? "Create New Board" : "Save Changes"}
+                        {isNew ? "Create New Board" : "Save Changes"}
                       </button>
                     </div>
                   </div>

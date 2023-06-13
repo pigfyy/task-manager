@@ -12,10 +12,8 @@ export default function Board() {
     state.selectedBoard,
   ]);
 
-  console.log(columns);
-
   return (
-    <div className="flex flex-grow gap-6 overflow-scroll p-6">
+    <div className="flex flex-grow gap-6 overflow-auto p-6">
       {!columns.length && (
         <div className="flex flex-grow flex-col items-center justify-center gap-8">
           <p className="text-h-l text-neutral-400">
@@ -23,18 +21,15 @@ export default function Board() {
           </p>
           <button
             onClick={() => {
-              const name = (() => {
-                let res;
-                boards.forEach((board) => {
-                  if (board.id === selectedBoard) {
-                    res = board.name;
-                  }
-                });
-
-                return res;
-              })();
-
-              useEditBoardStore.setState({ isOpen: true, name });
+              boards.forEach((board) => {
+                if (board.id === selectedBoard) {
+                  useEditBoardStore.setState({
+                    isOpen: true,
+                    id: board.id,
+                    isNew: false,
+                  });
+                }
+              });
             }}
             className="mt-2 rounded-[20px] bg-primary-400 px-4 py-2 text-center text-[13px] font-bold leading-l text-neutral-100 hover:bg-primary-200"
           >
@@ -47,7 +42,7 @@ export default function Board() {
           return (
             <div className="flex flex-col gap-6" key={key}>
               <div className="flex items-center gap-2">
-                <Dot color="bg-[#49C4E5]" />
+                <Dot color={value.color} />
                 <p className="text-s font-bold uppercase leading-s tracking-[2.4px] text-neutral-400">
                   {value.name}
                 </p>

@@ -41,7 +41,9 @@ export const useColumnStore = create(
 export const useEditBoardStore = create(
   devtools((set) => ({
     isOpen: false,
+    id: "",
     name: "",
+    isNew: true,
     columns: [
       { name: "", color: "#A8A4FF" },
       { name: "", color: "#A8A4FF" },
@@ -54,7 +56,10 @@ export const useEditBoardStore = create(
       })),
     reset: () =>
       set(() => ({
+        isOpen: false,
+        id: "",
         name: "",
+        isNew: true,
         columns: [
           { name: "", color: "#A8A4FF" },
           { name: "", color: "#A8A4FF" },
