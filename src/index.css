@@ -10,6 +10,9 @@
   p,
   span,
   input,
+  textarea,
+  select,
+  option,
   button {
     font-family: "Plus Jakarta Sans", sans-serif;
   }

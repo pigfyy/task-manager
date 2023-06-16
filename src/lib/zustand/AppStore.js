@@ -67,3 +67,30 @@ export const useEditBoardStore = create(
       })),
   }))
 );
+
+export const useEditTaskStore = create(
+  devtools((set) => ({
+    isOpen: false,
+    id: "",
+    name: "",
+    isNew: true,
+    description: "",
+    subtasks: ["", ""],
+    column: "",
+    reset: () =>
+      set(() => ({
+        isOpen: false,
+        id: "",
+        name: "",
+        isNew: true,
+        description: "",
+        subtasks: ["", ""],
+        column: "",
+      })),
+    addSubtask: () => {
+      set((state) => ({
+        subtasks: [...state.subtasks, ""],
+      }));
+    },
+  }))
+);

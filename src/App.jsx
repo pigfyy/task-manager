@@ -21,6 +21,18 @@ import SignIn from "@/components/SignIn";
 import { query, collection, orderBy } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 
+const useDarkMode = () => {
+  const isDarkMode = useAppStore((state) => state.isDarkMode);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+};
+
 const useBoards = () => {
   const [user] = useAuthState(auth);
   const q = user ? query(collection(db, "users", user.uid, "boards")) : null;
@@ -65,7 +77,22 @@ const useColumns = () => {
   return [value, loading, error];
 };
 
+const useTasks = () => {
+  const [user] = useAuthState(auth);
+
+  const q = user ? query(collection(db, "users", user.uid, "tasks")) : null;
+
+  const [value, loading, error] = useCollection(q, {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+
+  useEffect(() => {}, [value]);
+
+  return [value, loading, error];
+};
+
 export default function App() {
+  // getting states and using hooks
   const isDarkMode = useAppStore((state) => state.isDarkMode);
   const [boardListShown, setBoardListShown] = useBoardListShownStore(
     (state) => [state.boardListShown, state.setBoardListShown]
@@ -76,16 +103,9 @@ export default function App() {
   ]);
   const width = useWindowWidth();
   const [user, loading] = useAuthState(auth);
+  useDarkMode();
   useBoards();
   useColumns();
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   useEffect(() => {
     if (!selectedBoard) {

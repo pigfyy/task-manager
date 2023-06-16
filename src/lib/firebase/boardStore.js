@@ -11,7 +11,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 
-export const createBoard = async (id, name, columns) => {
+export const editBoard = async (id, name, columns) => {
   try {
     await setDoc(doc(db, "users", auth.currentUser.uid, "boards", id), {
       name: name,
@@ -36,18 +36,28 @@ export const createBoard = async (id, name, columns) => {
   }
 };
 
-export const getBoards = async (uid) => {
-  let boards = [];
-
-  const q = query(collection(db, "users", uid, "boards"));
-  const unsub = onSnapshot(q, (querySnapshot) => {
-    boards = [];
-    querySnapshot.forEach((doc) => {
-      boards.push({ id: doc.id, ...doc.data() });
+export const editTask = async (id, name, description, subtasks, column) => {
+  try {
+    await setDoc(doc(db, "users", auth.currentUser.uid, "tasks", id), {
+      name: name,
+      description: description,
+      column: column,
     });
 
-    return boards;
-  });
+    const batch = writeBatch(db);
+    subtasks.forEach((subtask, i) => {
+      const subtaskRef = doc(
+        collection(db, "users", auth.currentUser.uid, "tasks", id, "subtasks")
+      );
+      if (subtask)
+        batch.set(subtaskRef, {
+          name: subtask,
+          position: i,
+        });
+    });
 
-  return boards;
+    await batch.commit();
+  } catch (e) {
+    console.error("Error adding document: ", e);
+  }
 };

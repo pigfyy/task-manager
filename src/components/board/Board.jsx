@@ -27,6 +27,7 @@ export default function Board() {
                     isOpen: true,
                     id: board.id,
                     isNew: false,
+                    name: board.name,
                   });
                 }
               });

@@ -4,9 +4,9 @@ import { Fragment, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
 import { ReactComponent as IconCross } from "@/assets/icons/icon-cross.svg";
 
-import { createBoard } from "@/lib/firebase/boardStore";
+import { editBoard } from "@/lib/firebase/boardStore";
 
-export default function EditBoard(props) {
+export default function EditBoard() {
   const {
     isOpen,
     name,
@@ -26,14 +26,13 @@ export default function EditBoard(props) {
   }
 
   useEffect(() => {
-    if (!props.id && isOpen && isNew) {
+    if (isOpen && isNew) {
       useEditBoardStore.setState({ id: crypto.randomUUID() });
     }
-  }, [props.id, isOpen, isNew]);
+  }, [isOpen, isNew]);
 
   const handleSubmit = async () => {
-    console.log("test");
-    await createBoard(id, name, columns);
+    await editBoard(id, name, columns);
     setSelectedBoard(id || "");
     closeModal();
   };
