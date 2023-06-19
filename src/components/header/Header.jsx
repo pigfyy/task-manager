@@ -2,11 +2,14 @@ import { ReactComponent as LogoMobile } from "@/assets/icons/logo-mobile.svg";
 import { ReactComponent as IconVerticalEllipsis } from "@/assets/icons/icon-vertical-ellipsis.svg";
 import { ReactComponent as LogoDark } from "@/assets/icons/logo-dark.svg";
 import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
+import { ReactComponent as IconMobileAddTask } from "@/assets/icons/icon-add-task-mobile.svg";
 
-import { useBoardListShownStore } from "@/lib/zustand/AppStore";
+import {
+  useBoardListShownStore,
+  useEditTaskStore,
+} from "@/lib/zustand/AppStore";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import ToggleMobileBoardList from "@/components/header/ToggleMobileBoardList";
-import EditTask from "@/components/header/EditTask";
 
 export default function Header() {
   const boardListShown = useBoardListShownStore(
@@ -40,7 +43,15 @@ export default function Header() {
           <p className="text-h-l dark:text-neutral-100">Platform Launch</p>
           {width < 768 && <ToggleMobileBoardList />}
         </div>
-        <EditTask />
+        <button
+          className="ml-auto flex items-center gap-1 rounded-3xl bg-primary-400 px-[18px] py-[10px]"
+          onClick={() => useEditTaskStore.setState({ isOpen: true })}
+        >
+          <IconMobileAddTask />
+          <span className="text-h-m hidden text-neutral-100 md:block">
+            Add New Task
+          </span>
+        </button>
         <button>
           <IconVerticalEllipsis />
         </button>

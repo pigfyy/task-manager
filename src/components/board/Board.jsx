@@ -3,6 +3,9 @@ import {
   useColumnStore,
   useEditBoardStore,
   useBoardStore,
+  useTaskStore,
+  useSubtaskStore,
+  useViewTaskStore,
 } from "@/lib/zustand/AppStore";
 
 export default function Board() {
@@ -11,12 +14,18 @@ export default function Board() {
     state.boards,
     state.selectedBoard,
   ]);
+  const { tasks } = useTaskStore();
+  const { subtasks } = useSubtaskStore();
+
+  const filteredColumns = columns.filter(
+    (column) => column.board === selectedBoard
+  );
 
   return (
     <div className="flex flex-grow gap-6 overflow-auto p-6">
       {!columns.length && (
         <div className="flex flex-grow flex-col items-center justify-center gap-8">
-          <p className="text-h-l text-neutral-400">
+          <p className="text-h-l text-center text-neutral-400">
             This board is empty. Create a column to get started
           </p>
           <button
@@ -38,31 +47,63 @@ export default function Board() {
           </button>
         </div>
       )}
-      {columns.length &&
-        Object.entries(columns).map(([key, value]) => {
+      {filteredColumns.length > 0 &&
+        Object.entries(filteredColumns).map(([key, value]) => {
           return (
-            <div className="flex flex-col gap-6" key={key}>
+            <div
+              className="flex w-[280px] flex-shrink-0 flex-col gap-6"
+              key={key}
+            >
               <div className="flex items-center gap-2">
                 <Dot color={value.color} />
                 <p className="text-s font-bold uppercase leading-s tracking-[2.4px] text-neutral-400">
                   {value.name}
                 </p>
               </div>
-              <div className="flex flex-col gap-5"></div>
+              <div className="flex flex-col gap-5">
+                {tasks
+                  .filter((task) => task.column === value.id)
+                  .map((task) => (
+                    <button
+                      className="flex w-[280px] flex-col gap-2 rounded-lg bg-neutral-100 px-4 py-6 text-left dark:bg-neutral-800"
+                      key={crypto.randomUUID()}
+                      onClick={() =>
+                        useViewTaskStore.setState({
+                          isOpen: true,
+                          id: task.id,
+                          name: task.name,
+                          description: task.description,
+                          column: task.column,
+                          subtasks: subtasks.filter(
+                            (subtask) => subtask.task === task.id
+                          ),
+                        })
+                      }
+                    >
+                      <p className="text-m font-bold leading-m text-neutral-950 dark:text-neutral-100">
+                        {task.name}
+                      </p>
+                      <p className="text-s font-bold leading-s text-neutral-400">
+                        {
+                          subtasks.filter(
+                            (subtask) =>
+                              subtask.task === task.id &&
+                              subtask.isDone === true
+                          ).length
+                        }{" "}
+                        of{" "}
+                        {
+                          subtasks.filter((subtask) => subtask.task === task.id)
+                            .length
+                        }{" "}
+                        subtasks
+                      </p>
+                    </button>
+                  ))}
+              </div>
             </div>
           );
         })}
     </div>
   );
 }
-
-const temp = (
-  <div className="flex w-[280px] flex-col gap-2 rounded-lg bg-neutral-100 px-4 py-6 dark:bg-neutral-800">
-    <p className="text-m font-bold leading-m text-neutral-950 dark:text-neutral-100">
-      Build UI for onboarding flow
-    </p>
-    <p className="text-s font-bold leading-s text-neutral-400">
-      0 of 3 subtasks
-    </p>
-  </div>
-);

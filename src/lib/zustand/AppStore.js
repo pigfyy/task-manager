@@ -75,7 +75,10 @@ export const useEditTaskStore = create(
     name: "",
     isNew: true,
     description: "",
-    subtasks: ["", ""],
+    subtasks: [
+      { name: "", isDone: false },
+      { name: "", isDone: false },
+    ],
     column: "",
     reset: () =>
       set(() => ({
@@ -84,13 +87,45 @@ export const useEditTaskStore = create(
         name: "",
         isNew: true,
         description: "",
-        subtasks: ["", ""],
-        column: "",
+        subtasks: [
+          { name: "", isDone: false },
+          { name: "", isDone: false },
+        ],
       })),
     addSubtask: () => {
       set((state) => ({
         subtasks: [...state.subtasks, ""],
       }));
     },
+  }))
+);
+
+export const useTaskStore = create(
+  devtools((set) => ({
+    tasks: [],
+  }))
+);
+
+export const useSubtaskStore = create(
+  devtools((set) => ({
+    subtasks: [],
+  }))
+);
+
+export const useViewTaskStore = create(
+  devtools((set) => ({
+    isOpen: false,
+    id: "",
+    name: "",
+    description: "",
+    subtasks: [],
+    reset: () =>
+      set(() => ({
+        isOpen: false,
+        id: "",
+        name: "",
+        description: "",
+        subtasks: [],
+      })),
   }))
 );

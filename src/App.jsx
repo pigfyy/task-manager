@@ -2,12 +2,16 @@ import BoardList from "@/components/boardList/BoardList";
 import Header from "@/components/header/Header";
 import Board from "@/components/board/Board";
 import EditBoard from "@/components/boardList/EditBoard";
+import EditTask from "@/components/header/EditTask";
+import ViewTask from "@/components/board/ViewTask";
 
 import {
   useAppStore,
   useBoardListShownStore,
   useBoardStore,
   useColumnStore,
+  useTaskStore,
+  useSubtaskStore,
 } from "@/lib/zustand/AppStore";
 import { ReactComponent as LogoDark } from "@/assets/icons/logo-dark.svg";
 import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
@@ -58,7 +62,7 @@ const useColumns = () => {
   const q =
     user && selectedBoard
       ? query(
-          collection(db, "users", user.uid, "boards", selectedBoard, "columns"),
+          collection(db, "users", user.uid, "columns"),
           orderBy("position", "asc")
         )
       : null;
@@ -86,7 +90,31 @@ const useTasks = () => {
     snapshotListenOptions: { includeMetadataChanges: true },
   });
 
-  useEffect(() => {}, [value]);
+  useEffect(() => {
+    if (value)
+      useTaskStore.setState({
+        tasks: value.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+      });
+  }, [value]);
+
+  return [value, loading, error];
+};
+
+const useSubtasks = () => {
+  const [user] = useAuthState(auth);
+
+  const q = user ? query(collection(db, "users", user.uid, "subtasks")) : null;
+
+  const [value, loading, error] = useCollection(q, {
+    snapshotListenOptions: { includeMetadataChanges: true },
+  });
+
+  useEffect(() => {
+    if (value)
+      useSubtaskStore.setState({
+        subtasks: value.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+      });
+  }, [value]);
 
   return [value, loading, error];
 };
@@ -106,6 +134,8 @@ export default function App() {
   useDarkMode();
   useBoards();
   useColumns();
+  useTasks();
+  useSubtasks();
 
   useEffect(() => {
     if (!selectedBoard) {
@@ -118,6 +148,8 @@ export default function App() {
   return (
     <>
       <EditBoard />
+      <EditTask />
+      <ViewTask />
       {!loading &&
         (user ? (
           <div className={`min-h-screen`}>
@@ -134,7 +166,7 @@ export default function App() {
                 </div>
               )}
 
-              <div className="flex h-screen w-full flex-col bg-neutral-150 dark:bg-neutral-900">
+              <div className="flex h-screen w-full flex-col overflow-auto bg-neutral-150 dark:bg-neutral-900">
                 <Header />
                 <Board />
               </div>

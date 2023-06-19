@@ -1,15 +1,5 @@
 import { db, auth } from "@/lib/firebase/index";
-import {
-  collection,
-  addDoc,
-  writeBatch,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  getDocs,
-  setDoc,
-} from "firebase/firestore";
+import { collection, writeBatch, doc, setDoc } from "firebase/firestore";
 
 export const editBoard = async (id, name, columns) => {
   try {
@@ -20,13 +10,14 @@ export const editBoard = async (id, name, columns) => {
     const batch = writeBatch(db);
     columns.forEach((column, i) => {
       const columnRef = doc(
-        collection(db, "users", auth.currentUser.uid, "boards", id, "columns")
+        collection(db, "users", auth.currentUser.uid, "columns")
       );
       if (column.name)
         batch.set(columnRef, {
           name: column.name,
           color: column.color,
           position: i,
+          board: id,
         });
     });
 
@@ -37,6 +28,8 @@ export const editBoard = async (id, name, columns) => {
 };
 
 export const editTask = async (id, name, description, subtasks, column) => {
+  if (name === "") return;
+
   try {
     await setDoc(doc(db, "users", auth.currentUser.uid, "tasks", id), {
       name: name,
@@ -47,12 +40,14 @@ export const editTask = async (id, name, description, subtasks, column) => {
     const batch = writeBatch(db);
     subtasks.forEach((subtask, i) => {
       const subtaskRef = doc(
-        collection(db, "users", auth.currentUser.uid, "tasks", id, "subtasks")
+        collection(db, "users", auth.currentUser.uid, "subtasks")
       );
       if (subtask)
         batch.set(subtaskRef, {
-          name: subtask,
+          name: subtask.name,
           position: i,
+          isDone: subtask.isDone,
+          task: id,
         });
     });
 

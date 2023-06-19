@@ -1,7 +1,11 @@
 import { ReactComponent as IconMobileAddTask } from "@/assets/icons/icon-add-task-mobile.svg";
 import { ReactComponent as IconCross } from "@/assets/icons/icon-cross.svg";
 
-import { useEditTaskStore, useColumnStore } from "@/lib/zustand/AppStore";
+import {
+  useEditTaskStore,
+  useColumnStore,
+  useBoardStore,
+} from "@/lib/zustand/AppStore";
 import { useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
@@ -30,6 +34,7 @@ export default function EditTask() {
     state.addSubtask,
   ]);
   const { columns } = useColumnStore();
+  const { selectedBoard } = useBoardStore();
 
   useEffect(() => {
     if (isNew && isOpen) {
@@ -45,15 +50,6 @@ export default function EditTask() {
 
   return (
     <>
-      <button
-        className="ml-auto flex items-center gap-1 rounded-3xl bg-primary-400 px-[18px] py-[10px]"
-        onClick={() => useEditTaskStore.setState({ isOpen: true })}
-      >
-        <IconMobileAddTask />
-        <span className="text-h-m hidden text-neutral-100 md:block">
-          Add New Task
-        </span>
-      </button>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={reset}>
           <Transition.Child
@@ -131,8 +127,12 @@ export default function EditTask() {
                                 className="text-b-l w-full rounded-[4px] border-[1px] border-neutral-200 px-4 py-2 outline-none placeholder:text-[#BFBFC3] focus:border-primary-400 dark:border-[#404552] dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-primary-400"
                                 onChange={(e) => {
                                   const value = e.target.value;
-                                  const subtasksCopy = [...subtasks];
-                                  subtasksCopy[index] = value;
+                                  let subtasksCopy = [...subtasks];
+                                  subtasksCopy[index] = {
+                                    ...subtasksCopy[index],
+                                    name: value,
+                                  };
+
                                   useEditTaskStore.setState({
                                     subtasks: subtasksCopy,
                                   });
@@ -171,19 +171,19 @@ export default function EditTask() {
                         onChange={(e) => {
                           useEditTaskStore.setState({ column: e.target.value });
                         }}
+                        value={column}
                         className="text-b-l w-full appearance-none rounded-[4px] border-[1px] border-neutral-200 bg-[url('/icon-chevron-down.svg')] bg-right bg-no-repeat bg-origin-content px-4 py-2 outline-none placeholder:text-[#BFBFC3] focus:border-primary-400 dark:border-[#404552] dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-primary-400"
                       >
                         {columns.length > 0 &&
-                          columns.map((column) => {
-                            return (
-                              <option
-                                key={crypto.randomUUID()}
-                                value={column.id}
-                              >
-                                {column.name}
-                              </option>
-                            );
-                          })}
+                          columns
+                            .filter((column) => column.board === selectedBoard)
+                            .map((column) => {
+                              return (
+                                <option key={column.id} value={column.id}>
+                                  {column.name}
+                                </option>
+                              );
+                            })}
                       </select>
                     </div>
                     <button
