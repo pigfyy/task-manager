@@ -1,31 +1,40 @@
 import { ReactComponent as IconVerticalEllipsis } from "@/assets/icons/icon-vertical-ellipsis.svg";
 import { ReactComponent as IconCheck } from "@/assets/icons/icon-check.svg";
+// import TextareaAutosize from "react-textarea-autosize";
 
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { useViewTaskStore } from "@/lib/zustand/AppStore";
+import {
+  useViewTaskStore,
+  useColumnStore,
+  useBoardStore,
+} from "@/lib/zustand/AppStore";
 
 function ViewTask() {
   const { id, name, description, subtasks, column } = useViewTaskStore();
+  const { columns } = useColumnStore();
+  const { selectedBoard } = useBoardStore();
 
-  console.log(subtasks);
+  const filteredColumns = columns.filter(
+    (column) => column.board === selectedBoard
+  );
 
   return (
-    <div>
+    <div className="flex w-full flex-col gap-6 p-6">
       <div className="flex">
-        <p>{name}</p>
+        {/* <TextareaAutosize value={name} /> */}
         <button>
           <IconVerticalEllipsis />
         </button>
       </div>
       <p>{description}</p>
-      <p>
-        Subtasks{" "}
-        {`(${subtasks.filter((subtask) => subtask.isDone === true).length} of ${
-          subtasks.length
-        })`}
-      </p>
       <div>
+        <p>
+          Subtasks{" "}
+          {`(${
+            subtasks.filter((subtask) => subtask.isDone === true).length
+          } of ${subtasks.length})`}
+        </p>
         {subtasks.map((subtask) => (
           <div className="flex" key={subtask.id}>
             <input type="checkbox" name="" id="" />
@@ -33,8 +42,16 @@ function ViewTask() {
           </div>
         ))}
       </div>
-      <p>Current Status</p>
-      <select></select>
+      <div>
+        <p>Current Status</p>
+        <select>
+          {filteredColumns.map((column) => (
+            <option key={column.id} value={column.id}>
+              {column.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
