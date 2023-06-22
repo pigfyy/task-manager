@@ -103,7 +103,12 @@ const useTasks = () => {
 const useSubtasks = () => {
   const [user] = useAuthState(auth);
 
-  const q = user ? query(collection(db, "users", user.uid, "subtasks")) : null;
+  const q = user
+    ? query(
+        collection(db, "users", user.uid, "subtasks"),
+        orderBy("position", "asc")
+      )
+    : null;
 
   const [value, loading, error] = useCollection(q, {
     snapshotListenOptions: { includeMetadataChanges: true },

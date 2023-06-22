@@ -76,8 +76,8 @@ export const useEditTaskStore = create(
     isNew: true,
     description: "",
     subtasks: [
-      { name: "", isDone: false },
-      { name: "", isDone: false },
+      { id: crypto.randomUUID(), name: "", isDone: false },
+      { id: crypto.randomUUID(), name: "", isDone: false },
     ],
     column: "",
     reset: () =>
@@ -88,13 +88,17 @@ export const useEditTaskStore = create(
         isNew: true,
         description: "",
         subtasks: [
-          { name: "", isDone: false },
-          { name: "", isDone: false },
+          { id: crypto.randomUUID(), name: "", isDone: false },
+          { id: crypto.randomUUID(), name: "", isDone: false },
         ],
+        column: "",
       })),
     addSubtask: () => {
       set((state) => ({
-        subtasks: [...state.subtasks, ""],
+        subtasks: [
+          ...state.subtasks,
+          { id: crypto.randomUUID(), name: "", isDone: false },
+        ],
       }));
     },
   }))

@@ -36,6 +36,10 @@ export default function EditTask() {
   const { columns } = useColumnStore();
   const { selectedBoard } = useBoardStore();
 
+  const filteredColumns = columns.filter(
+    (column) => column.board === selectedBoard
+  );
+
   useEffect(() => {
     if (isNew && isOpen) {
       useEditTaskStore.setState({ id: crypto.randomUUID() });
@@ -43,10 +47,10 @@ export default function EditTask() {
   }, [isNew, isOpen]);
 
   useEffect(() => {
-    if (isNew && isOpen) {
-      useEditTaskStore.setState({ column: columns[0].id });
+    if (!column && isNew && isOpen) {
+      useEditTaskStore.setState({ column: filteredColumns[0].id });
     }
-  }, [columns, isNew, isOpen]);
+  }, [filteredColumns, isNew, isOpen, column]);
 
   return (
     <>
@@ -172,18 +176,16 @@ export default function EditTask() {
                           useEditTaskStore.setState({ column: e.target.value });
                         }}
                         value={column}
-                        className="text-b-l w-full appearance-none rounded-[4px] border-[1px] border-neutral-200 bg-[url('/icon-chevron-down.svg')] bg-right bg-no-repeat bg-origin-content px-4 py-2 outline-none placeholder:text-[#BFBFC3] focus:border-primary-400 dark:border-[#404552] dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-primary-400"
+                        className="text-b-l w-full appearance-none rounded-[4px] border-[1px] border-neutral-200 bg-neutral-100 bg-[url('/icon-chevron-down.svg')] bg-right bg-no-repeat bg-origin-content px-4 py-2 outline-none placeholder:text-[#BFBFC3] focus:border-primary-400 dark:border-[#404552] dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-primary-400"
                       >
-                        {columns.length > 0 &&
-                          columns
-                            .filter((column) => column.board === selectedBoard)
-                            .map((column) => {
-                              return (
-                                <option key={column.id} value={column.id}>
-                                  {column.name}
-                                </option>
-                              );
-                            })}
+                        {filteredColumns.length > 0 &&
+                          filteredColumns.map((column) => {
+                            return (
+                              <option key={column.id} value={column.id}>
+                                {column.name}
+                              </option>
+                            );
+                          })}
                       </select>
                     </div>
                     <button

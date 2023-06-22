@@ -7,6 +7,7 @@ import { ReactComponent as IconMobileAddTask } from "@/assets/icons/icon-add-tas
 import {
   useBoardListShownStore,
   useEditTaskStore,
+  useBoardStore,
 } from "@/lib/zustand/AppStore";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import ToggleMobileBoardList from "@/components/header/ToggleMobileBoardList";
@@ -16,6 +17,7 @@ export default function Header() {
     (state) => state.boardListShown
   );
   const width = useWindowWidth();
+  const { boards, selectedBoard } = useBoardStore();
 
   return (
     <div className="flex">
@@ -40,7 +42,9 @@ export default function Header() {
       </div>
       <div className="flex flex-grow items-center gap-4 border-b-[1px] border-neutral-200 bg-neutral-100 px-4 py-5 dark:border-neutral-700 dark:bg-neutral-800 md:px-6">
         <div className="flex gap-2">
-          <p className="text-h-l dark:text-neutral-100">Platform Launch</p>
+          <p className="text-h-l dark:text-neutral-100">
+            {boards.find((board) => board.id === selectedBoard)?.name}
+          </p>
           {width < 768 && <ToggleMobileBoardList />}
         </div>
         <button

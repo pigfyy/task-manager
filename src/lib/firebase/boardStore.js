@@ -1,5 +1,11 @@
 import { db, auth } from "@/lib/firebase/index";
-import { collection, writeBatch, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  writeBatch,
+  doc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 
 export const editBoard = async (id, name, columns) => {
   try {
@@ -40,9 +46,13 @@ export const editTask = async (id, name, description, subtasks, column) => {
     const batch = writeBatch(db);
     subtasks.forEach((subtask, i) => {
       const subtaskRef = doc(
-        collection(db, "users", auth.currentUser.uid, "subtasks")
+        db,
+        "users",
+        auth.currentUser.uid,
+        "subtasks",
+        subtask.id
       );
-      if (subtask)
+      if (subtask.name)
         batch.set(subtaskRef, {
           name: subtask.name,
           position: i,
@@ -55,4 +65,8 @@ export const editTask = async (id, name, description, subtasks, column) => {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+};
+
+export const deleteSubtask = async (id) => {
+  await deleteDoc(doc(db, "users", auth.currentUser.uid, "subtasks", id));
 };
