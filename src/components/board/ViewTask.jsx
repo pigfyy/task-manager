@@ -1,15 +1,17 @@
 import { ReactComponent as IconVerticalEllipsis } from "@/assets/icons/icon-vertical-ellipsis.svg";
 import { ReactComponent as IconCheck } from "@/assets/icons/icon-check.svg";
-import TextareaAutosize from "react-textarea-autosize";
+import { GrEdit, GrTrash } from "react-icons/gr";
 
-import { Dialog, Transition } from "@headlessui/react";
+import TextareaAutosize from "react-textarea-autosize";
+import { Dialog, Transition, Popover } from "@headlessui/react";
 import { Fragment } from "react";
 import {
   useViewTaskStore,
+  useEditTaskStore,
   useColumnStore,
   useBoardStore,
 } from "@/lib/zustand/AppStore";
-import { editTask } from "@/lib/firebase/boardStore";
+import { editTask, deleteTaskAndSubtasks } from "@/lib/firebase/boardStore";
 
 function Checkmark({ isDone }) {
   return (
@@ -20,6 +22,62 @@ function Checkmark({ isDone }) {
     >
       <IconCheck className="text-neutral-100" />
     </button>
+  );
+}
+
+function EllipsisMenu() {
+  const { id, name, description, subtasks, column } = useViewTaskStore();
+
+  return (
+    <Popover className="relative">
+      {({ open }) => (
+        <>
+          <Popover.Button>
+            <IconVerticalEllipsis />
+          </Popover.Button>
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-200"
+            enterFrom="opacity-0 translate-y-1"
+            enterTo="opacity-100 translate-y-0"
+            leave="transition ease-in duration-150"
+            leaveFrom="opacity-100 translate-y-0"
+            leaveTo="opacity-0 translate-y-1"
+          >
+            <Popover.Panel className="absolute right-0 z-10 mt-2 flex w-fit transform flex-col divide-y-[1px] divide-neutral-200 rounded-md border-[1px] border-neutral-200 bg-neutral-100 shadow-xl">
+              <button
+                onClick={() => {
+                  useViewTaskStore.setState({ isOpen: false });
+                  useEditTaskStore.setState({
+                    isOpen: true,
+                    isNew: false,
+                    id: id,
+                    name: name,
+                    description: description,
+                    subtasks: subtasks,
+                    column: column,
+                  });
+                }}
+                className="text-b-l flex items-center gap-1 px-3 py-1 text-neutral-950 hover:backdrop-brightness-90"
+              >
+                <GrEdit />
+                Edit
+              </button>
+              <button
+                className="text-b-l flex items-center gap-1 px-3 py-1 text-[#FF0000] hover:backdrop-brightness-90"
+                onClick={() => {
+                  deleteTaskAndSubtasks(id, subtasks);
+                  useViewTaskStore.setState({ isOpen: false });
+                }}
+              >
+                <GrTrash className="red-filter" />
+                Delete
+              </button>
+            </Popover.Panel>
+          </Transition>
+        </>
+      )}
+    </Popover>
   );
 }
 
@@ -41,9 +99,7 @@ function ViewTask() {
           maxRows={4}
           spellCheck={false}
         />
-        <button>
-          <IconVerticalEllipsis />
-        </button>
+        <EllipsisMenu />
       </div>
       {description && (
         <TextareaAutosize
@@ -84,7 +140,13 @@ function ViewTask() {
         <p className="text-s font-bold leading-s text-neutral-400">
           Current Status
         </p>
-        <select className="text-b-l w-full appearance-none rounded-[4px] border-[1px] border-neutral-200 bg-neutral-100 bg-[url('/icon-chevron-down.svg')] bg-right bg-no-repeat bg-origin-content px-4 py-2 outline-none placeholder:text-[#BFBFC3] focus:border-primary-400 dark:border-[#404552] dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-primary-400">
+        <select
+          className="text-b-l w-full appearance-none rounded-[4px] border-[1px] border-neutral-200 bg-neutral-100 bg-[url('/icon-chevron-down.svg')] bg-right bg-no-repeat bg-origin-content px-4 py-2 outline-none placeholder:text-[#BFBFC3] focus:border-primary-400 dark:border-[#404552] dark:bg-neutral-800 dark:text-neutral-100 dark:focus:border-primary-400"
+          onChange={(e) => {
+            useViewTaskStore.setState({ column: e.target.value });
+          }}
+          value={column}
+        >
           {filteredColumns.map((column) => (
             <option key={column.id} value={column.id}>
               {column.name}

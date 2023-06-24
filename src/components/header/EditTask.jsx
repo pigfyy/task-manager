@@ -85,7 +85,7 @@ export default function EditTask() {
                       as="p"
                       className="text-h-l text-neutral-950 dark:text-neutral-100"
                     >
-                      Add New Task
+                      {isNew ? "Add New Task" : "Edit Task"}
                     </Dialog.Title>
                     <div className="flex flex-col gap-2">
                       <p className="text-b-m text-neutral-400 dark:text-neutral-100">
@@ -98,6 +98,7 @@ export default function EditTask() {
                         onChange={(e) =>
                           useEditTaskStore.setState({ name: e.target.value })
                         }
+                        value={name}
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -113,6 +114,7 @@ export default function EditTask() {
                             description: e.target.value,
                           })
                         }
+                        value={description}
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -141,6 +143,7 @@ export default function EditTask() {
                                     subtasks: subtasksCopy,
                                   });
                                 }}
+                                value={subtask.name}
                               />
                               <button
                                 className="fill-primary-400 transition-all hover:fill-secondary-400"
@@ -195,7 +198,7 @@ export default function EditTask() {
                         reset();
                       }}
                     >
-                      Create Task
+                      {isNew ? "Create Task" : "Save Changes"}
                     </button>
                   </div>
                 </Dialog.Panel>

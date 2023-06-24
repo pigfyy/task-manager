@@ -48,4 +48,9 @@
   .popup-overlay {
     background: rgba(0, 0, 0, 0.5);
   }
+
+  .red-filter {
+    filter: invert(17%) sepia(98%) saturate(6226%) hue-rotate(356deg)
+      brightness(90%) contrast(125%);
+  }
 }

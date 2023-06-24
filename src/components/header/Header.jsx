@@ -8,6 +8,7 @@ import {
   useBoardListShownStore,
   useEditTaskStore,
   useBoardStore,
+  useColumnStore,
 } from "@/lib/zustand/AppStore";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import ToggleMobileBoardList from "@/components/header/ToggleMobileBoardList";
@@ -18,6 +19,11 @@ export default function Header() {
   );
   const width = useWindowWidth();
   const { boards, selectedBoard } = useBoardStore();
+  const { columns } = useColumnStore();
+
+  const canCreateTask =
+    selectedBoard &&
+    columns.filter((column) => column.board === selectedBoard).length > 0;
 
   return (
     <div className="flex">
@@ -49,7 +55,11 @@ export default function Header() {
         </div>
         <button
           className="ml-auto flex items-center gap-1 rounded-3xl bg-primary-400 px-[18px] py-[10px]"
-          onClick={() => useEditTaskStore.setState({ isOpen: true })}
+          onClick={() => {
+            console.log(canCreateTask);
+            if (!canCreateTask) return;
+            useEditTaskStore.setState({ isOpen: true });
+          }}
         >
           <IconMobileAddTask />
           <span className="text-h-m hidden text-neutral-100 md:block">

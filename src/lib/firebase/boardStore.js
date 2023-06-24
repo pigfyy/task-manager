@@ -70,3 +70,17 @@ export const editTask = async (id, name, description, subtasks, column) => {
 export const deleteSubtask = async (id) => {
   await deleteDoc(doc(db, "users", auth.currentUser.uid, "subtasks", id));
 };
+
+export const deleteTaskAndSubtasks = async (id, subtasks) => {
+  const batch = writeBatch(db);
+
+  batch.delete(doc(db, "users", auth.currentUser.uid, "tasks", id));
+
+  subtasks.forEach((subtask) => {
+    batch.delete(
+      doc(db, "users", auth.currentUser.uid, "subtasks", subtask.id)
+    );
+  });
+
+  await batch.commit();
+};
