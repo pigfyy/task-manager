@@ -23,7 +23,7 @@ export default function Board() {
 
   return (
     <div className="flex flex-grow gap-6 overflow-auto p-6">
-      {!columns.length && (
+      {!filteredColumns.length && (
         <div className="flex flex-grow flex-col items-center justify-center gap-8">
           <p className="text-h-l text-center text-neutral-400">
             This board is empty. Create a column to get started

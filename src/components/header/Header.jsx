@@ -12,6 +12,7 @@ import {
 } from "@/lib/zustand/AppStore";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import ToggleMobileBoardList from "@/components/header/ToggleMobileBoardList";
+import { toast } from "react-hot-toast";
 
 export default function Header() {
   const boardListShown = useBoardListShownStore(
@@ -56,8 +57,10 @@ export default function Header() {
         <button
           className="ml-auto flex items-center gap-1 rounded-3xl bg-primary-400 px-[18px] py-[10px]"
           onClick={() => {
-            console.log(canCreateTask);
-            if (!canCreateTask) return;
+            if (!canCreateTask) {
+              toast.error("You need to create a column first!");
+              return;
+            }
             useEditTaskStore.setState({ isOpen: true });
           }}
         >

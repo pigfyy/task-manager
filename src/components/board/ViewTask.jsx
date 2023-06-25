@@ -4,7 +4,7 @@ import { GrEdit, GrTrash } from "react-icons/gr";
 
 import TextareaAutosize from "react-textarea-autosize";
 import { Dialog, Transition, Popover } from "@headlessui/react";
-import { Fragment } from "react";
+import { useCallback, useEffect, Fragment } from "react";
 import {
   useViewTaskStore,
   useEditTaskStore,
@@ -12,6 +12,7 @@ import {
   useBoardStore,
 } from "@/lib/zustand/AppStore";
 import { editTask, deleteTaskAndSubtasks } from "@/lib/firebase/boardStore";
+import debounce from "lodash.debounce";
 
 function Checkmark({ isDone }) {
   return (
@@ -90,23 +91,42 @@ function ViewTask() {
     (column) => column.board === selectedBoard
   );
 
+  useEffect(() => {
+    const debouncedUpdate = debounce(
+      async (id, name, description, subtasks, column) => {
+        await editTask(id, name, description, subtasks, column);
+      },
+      500
+    );
+
+    debouncedUpdate(id, name, description, subtasks, column);
+
+    return () => {
+      debouncedUpdate.cancel();
+    };
+  }, [id, name, description, subtasks, column]);
+
   return (
     <div className="flex w-full flex-col gap-6 p-6">
       <div className="flex gap-4">
         <TextareaAutosize
           className="text-h-l w-full resize-none text-neutral-950 outline-none dark:bg-neutral-800 dark:text-neutral-100"
-          defaultValue={name}
+          value={name}
           maxRows={4}
           spellCheck={false}
+          onChange={(e) => useViewTaskStore.setState({ name: e.target.value })}
         />
         <EllipsisMenu />
       </div>
       {description && (
         <TextareaAutosize
           className="text-b-l w-full resize-none text-neutral-400 outline-none dark:bg-neutral-800 dark:text-neutral-100"
-          defaultValue={description}
+          value={description}
           maxRows={6}
           spellCheck={false}
+          onChange={(e) =>
+            useViewTaskStore.setState({ description: e.target.value })
+          }
         />
       )}
       {subtasks.length > 0 && (

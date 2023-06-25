@@ -18,6 +18,7 @@ import { ReactComponent as LogoLight } from "@/assets/icons/logo-light.svg";
 import { ReactComponent as IconShowSidebar } from "@/assets/icons/icon-show-sidebar.svg";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/lib/firebase/index";
@@ -152,6 +153,7 @@ export default function App() {
 
   return (
     <>
+      <Toaster />
       <EditBoard />
       <EditTask />
       <ViewTask />
