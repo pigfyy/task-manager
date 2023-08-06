@@ -19,7 +19,9 @@ export const useAppStore = create(
 export const useBoardListShownStore = create(
   devtools((set) => ({
     boardListShown: true,
+    isMobile: false,
     setBoardListShown: (newValue) => set(() => ({ boardListShown: newValue })),
+    setIsMobile: (newValue) => set(() => ({ isMobile: newValue })),
   }))
 );
 

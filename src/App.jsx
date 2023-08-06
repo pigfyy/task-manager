@@ -128,13 +128,14 @@ const useSubtasks = () => {
 export default function App() {
   // getting states and using hooks
   const isDarkMode = useAppStore((state) => state.isDarkMode);
-  const [boardListShown, setBoardListShown] = useBoardListShownStore(
-    (state) => [state.boardListShown, state.setBoardListShown]
-  );
-  const [boards, selectedBoard] = useBoardStore((state) => [
-    state.boards,
-    state.selectedBoard,
-  ]);
+  const [boardListShown, isMobile, setBoardListShown, setIsMobile] =
+    useBoardListShownStore((state) => [
+      state.boardListShown,
+      state.isMobile,
+      state.setBoardListShown,
+      state.setIsMobile,
+    ]);
+  const { boards, selectedBoard } = useBoardStore();
   const width = useWindowWidth();
   const [user, loading] = useAuthState(auth);
   useDarkMode();
@@ -143,6 +144,7 @@ export default function App() {
   useTasks();
   useSubtasks();
 
+  // show first board if no board is selected
   useEffect(() => {
     if (!selectedBoard) {
       if (boards.length > 0) {
@@ -150,6 +152,19 @@ export default function App() {
       }
     }
   }, [selectedBoard, boards]);
+
+  // adjust board list shown on window resize
+  useEffect(() => {
+    if (width < 768 && !isMobile) {
+      setBoardListShown(false);
+      setIsMobile(true);
+    } else if (width >= 768 && isMobile) {
+      setBoardListShown(true);
+      setIsMobile(false);
+    } else {
+      console.error("Unexpected error in adjusting whether to show board list");
+    }
+  }, [width]);
 
   return (
     <>
