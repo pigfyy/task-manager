@@ -1,15 +1,17 @@
 import { ReactComponent as IconVerticalEllipsis } from "@/assets/icons/icon-vertical-ellipsis.svg";
 import { ReactComponent as IconCheck } from "@/assets/icons/icon-check.svg";
 import { GrEdit, GrTrash } from "react-icons/gr";
+import { IconContext } from "react-icons";
 
 import TextareaAutosize from "react-textarea-autosize";
 import { Dialog, Transition, Popover } from "@headlessui/react";
-import { useCallback, useEffect, Fragment } from "react";
+import { useEffect, Fragment } from "react";
 import {
   useViewTaskStore,
   useEditTaskStore,
   useColumnStore,
   useBoardStore,
+  useAppStore,
 } from "@/lib/zustand/AppStore";
 import { editTask, deleteTaskAndSubtasks } from "@/lib/firebase/boardStore";
 import debounce from "lodash.debounce";
@@ -28,6 +30,7 @@ function Checkmark({ isDone }) {
 
 function EllipsisMenu() {
   const { id, name, description, subtasks, column } = useViewTaskStore();
+  const { isDarkMode } = useAppStore();
 
   return (
     <Popover className="relative">
@@ -45,7 +48,7 @@ function EllipsisMenu() {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1"
           >
-            <Popover.Panel className="absolute right-0 z-10 mt-2 flex w-fit transform flex-col divide-y-[1px] divide-neutral-200 rounded-md border-[1px] border-neutral-200 bg-neutral-100 shadow-xl">
+            <Popover.Panel className="absolute right-0 z-10 mt-2 flex w-fit transform flex-col divide-y-[1px] divide-neutral-200 rounded-md border-[1px] border-neutral-200 bg-neutral-100 shadow-xl dark:divide-neutral-700 dark:border-neutral-700 dark:bg-neutral-900">
               <button
                 onClick={() => {
                   useViewTaskStore.setState({ isOpen: false });
@@ -59,9 +62,9 @@ function EllipsisMenu() {
                     column: column,
                   });
                 }}
-                className="text-b-l flex items-center gap-1 px-3 py-1 text-neutral-950 hover:backdrop-brightness-90"
+                className="text-b-l flex items-center gap-1 px-3 py-1 text-neutral-950 hover:backdrop-brightness-90 dark:text-neutral-100"
               >
-                <GrEdit />
+                <GrEdit className={isDarkMode && "white-filter"} />
                 Edit
               </button>
               <button
@@ -140,7 +143,7 @@ function ViewTask() {
           <div className="flex flex-col gap-2">
             {subtasks.map((subtask, i) => (
               <div
-                className="flex cursor-pointer items-center gap-4 rounded-md bg-neutral-150 px-2 py-3 text-s font-bold text-neutral-950"
+                className="flex cursor-pointer items-center gap-4 rounded-md bg-neutral-150 px-2 py-3 text-s font-bold text-neutral-950 dark:bg-neutral-900 dark:text-[#8f9095]"
                 key={subtask.id}
                 onClick={() => {
                   let subtasksCopy = [...subtasks];

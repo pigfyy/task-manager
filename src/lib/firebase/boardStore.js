@@ -16,10 +16,15 @@ export const editBoard = async (id, name, columns) => {
     const batch = writeBatch(db);
     columns.forEach((column, i) => {
       const columnRef = doc(
-        collection(db, "users", auth.currentUser.uid, "columns")
+        db,
+        "users",
+        auth.currentUser.uid,
+        "columns",
+        column.id
       );
       if (column.name)
         batch.set(columnRef, {
+          id: column.id,
           name: column.name,
           color: column.color,
           position: i,

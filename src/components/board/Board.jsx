@@ -56,9 +56,24 @@ export default function Board() {
             >
               <div className="flex items-center gap-2">
                 <Dot color={value.color} />
-                <p className="text-s font-bold uppercase leading-s tracking-[2.4px] text-neutral-400">
+                <button
+                  className="text-s font-bold uppercase leading-s tracking-[2.4px] text-neutral-400 hover:underline"
+                  onClick={() => {
+                    boards.forEach((board) => {
+                      if (board.id === selectedBoard) {
+                        useEditBoardStore.setState({
+                          isOpen: true,
+                          id: board.id,
+                          isNew: false,
+                          name: board.name,
+                          columns: filteredColumns,
+                        });
+                      }
+                    });
+                  }}
+                >
                   {value.name}
-                </p>
+                </button>
               </div>
               <div className="flex flex-col gap-5">
                 {tasks

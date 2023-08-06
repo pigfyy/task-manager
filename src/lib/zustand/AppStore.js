@@ -44,15 +44,15 @@ export const useEditBoardStore = create(
     id: "",
     name: "",
     isNew: true,
-    columns: [
-      { name: "", color: "#A8A4FF" },
-      { name: "", color: "#A8A4FF" },
-    ],
+    columns: [],
     setName: (newValue) => set(() => ({ name: newValue })),
     setColumns: (newValue) => set(() => ({ columns: newValue })),
     addColumn: () =>
       set((state) => ({
-        columns: [...state.columns, { name: "", color: "#A8A4FF" }],
+        columns: [
+          ...state.columns,
+          { id: crypto.randomUUID(), name: "", color: "#A8A4FF" },
+        ],
       })),
     reset: () =>
       set(() => ({
@@ -60,10 +60,7 @@ export const useEditBoardStore = create(
         id: "",
         name: "",
         isNew: true,
-        columns: [
-          { name: "", color: "#A8A4FF" },
-          { name: "", color: "#A8A4FF" },
-        ],
+        columns: [],
       })),
   }))
 );

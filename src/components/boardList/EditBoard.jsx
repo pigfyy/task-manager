@@ -29,6 +29,10 @@ export default function EditBoard() {
     if (isOpen && isNew) {
       useEditBoardStore.setState({ id: crypto.randomUUID() });
     }
+    if (isOpen && columns.length === 0) {
+      addColumn();
+      addColumn();
+    }
   }, [isOpen, isNew]);
 
   const handleSubmit = async () => {
@@ -126,6 +130,7 @@ export default function EditBoard() {
                                     columnsCopy[index].name = value;
                                     setColumns(columnsCopy);
                                   }}
+                                  value={column.name}
                                 />
                                 <button
                                   className="fill-primary-400 transition-all hover:fill-secondary-400"
