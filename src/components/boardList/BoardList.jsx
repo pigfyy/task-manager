@@ -22,7 +22,7 @@ export default function BoardList() {
     <div className="flex min-w-[264px] flex-grow flex-col justify-between gap-5 overflow-auto rounded-lg bg-neutral-100 py-4 drop-shadow-[0_10px_20px_rgba(54,78,126,0.25)] dark:bg-neutral-800 md:rounded-none md:drop-shadow-none">
       <div className="flex flex-col gap-3 overflow-auto">
         <p className="text-h-s pl-6 uppercase text-neutral-400">
-          All Boards (3)
+          All Boards {boards.length > 0 && `(${boards.length})`}
         </p>
         <div className="overflow-auto">
           <ul className="overflow-auto pr-8">

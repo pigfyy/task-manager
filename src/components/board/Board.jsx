@@ -23,10 +23,28 @@ export default function Board() {
 
   return (
     <div className="flex flex-grow gap-6 overflow-auto p-6">
-      {!filteredColumns.length && (
+      {boards.length === 0 && (
         <div className="flex flex-grow flex-col items-center justify-center gap-8">
           <p className="text-h-l text-center text-neutral-400">
-            This board is empty. Create a column to get started
+            You don't have any boards yet. Create one to get started!
+          </p>
+          <button
+            onClick={() =>
+              useEditBoardStore.setState({
+                isOpen: true,
+                isNew: true,
+              })
+            }
+            className="mt-2 rounded-[20px] bg-primary-400 px-4 py-2 text-center text-[13px] font-bold leading-l text-neutral-100 hover:bg-primary-200"
+          >
+            + Add New Board
+          </button>
+        </div>
+      )}
+      {boards.length > 0 && !filteredColumns.length && (
+        <div className="flex flex-grow flex-col items-center justify-center gap-8">
+          <p className="text-h-l text-center text-neutral-400">
+            This board is empty. Create a column to get started!
           </p>
           <button
             onClick={() => {
@@ -47,7 +65,8 @@ export default function Board() {
           </button>
         </div>
       )}
-      {filteredColumns.length > 0 &&
+      {boards.length > 0 &&
+        filteredColumns.length > 0 &&
         Object.entries(filteredColumns).map(([key, value]) => {
           return (
             <div

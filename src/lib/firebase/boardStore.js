@@ -98,3 +98,33 @@ export const deleteTaskAndSubtasks = async (id, subtasks) => {
 
   await batch.commit();
 };
+
+export const deleteBoard = async (id, columns, tasks, subtasks) => {
+  try {
+    const batch = writeBatch(db);
+
+    batch.delete(doc(db, "users", auth.currentUser.uid, "boards", id));
+
+    columns.forEach((column) => {
+      batch.delete(
+        doc(db, "users", auth.currentUser.uid, "columns", column.id)
+      );
+    });
+
+    tasks.forEach((task) => {
+      batch.delete(doc(db, "users", auth.currentUser.uid, "tasks", task.id));
+    });
+
+    subtasks.forEach((subtask) => {
+      batch.delete(
+        doc(db, "users", auth.currentUser.uid, "subtasks", subtask.id)
+      );
+    });
+
+    await batch.commit();
+    return true;
+  } catch (e) {
+    console.error("Error deleting document: ", e);
+    return false;
+  }
+};

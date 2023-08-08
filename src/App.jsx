@@ -150,6 +150,8 @@ export default function App() {
       if (boards.length > 0) {
         useBoardStore.setState({ selectedBoard: boards[0].id });
       }
+    } else if (boards.length === 0) {
+      useBoardStore.setState({ selectedBoard: "" });
     }
   }, [selectedBoard, boards]);
 
