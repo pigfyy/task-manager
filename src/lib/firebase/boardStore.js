@@ -7,13 +7,22 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-export const editBoard = async (id, name, columns) => {
+export const editBoard = async (id, name, columns, prevColumns) => {
   try {
     await setDoc(doc(db, "users", auth.currentUser.uid, "boards", id), {
       name: name,
     });
 
     const batch = writeBatch(db);
+
+    prevColumns
+      .filter((column) => !columns.includes(column))
+      .forEach((column) => {
+        batch.delete(
+          doc(db, "users", auth.currentUser.uid, "columns", column.id)
+        );
+      });
+
     columns.forEach((column, i) => {
       const columnRef = doc(
         db,

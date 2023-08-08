@@ -8,8 +8,6 @@ export default function SignIn() {
   const isDarkMode = useAppStore((state) => state.isDarkMode);
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
 
-  console.log(`user: ${user} loading: ${loading} error: ${error}`);
-
   return (
     <div className={`${isDarkMode ? "dark" : ""}`}>
       <div className="flex min-h-screen items-center justify-center bg-neutral-200 dark:bg-neutral-800">

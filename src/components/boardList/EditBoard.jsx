@@ -1,4 +1,8 @@
-import { useBoardStore, useEditBoardStore } from "@/lib/zustand/AppStore";
+import {
+  useBoardStore,
+  useEditBoardStore,
+  useColumnStore,
+} from "@/lib/zustand/AppStore";
 import { Dialog, Transition, Popover } from "@headlessui/react";
 import { Fragment, useEffect } from "react";
 import { HexColorPicker } from "react-colorful";
@@ -18,6 +22,10 @@ export default function EditBoard() {
     addColumn,
     reset,
   } = useEditBoardStore();
+  const selectedBoard = useBoardStore((state) => state.selectedBoard);
+  const prevColumns = useColumnStore((state) => state.columns).filter(
+    (column) => column.board === selectedBoard
+  );
   const setSelectedBoard = useBoardStore((state) => state.setSelectedBoard);
 
   function closeModal() {
@@ -33,10 +41,10 @@ export default function EditBoard() {
       addColumn();
       addColumn();
     }
-  }, [isOpen, isNew]);
+  }, [isOpen, isNew, addColumn, columns.length]);
 
   const handleSubmit = async () => {
-    await editBoard(id, name, columns);
+    await editBoard(id, name, columns, prevColumns);
     setSelectedBoard(id || "");
     closeModal();
   };
@@ -128,7 +136,9 @@ export default function EditBoard() {
                                     const value = e.target.value;
                                     const columnsCopy = [...columns];
                                     columnsCopy[index].name = value;
-                                    setColumns(columnsCopy);
+                                    useEditBoardStore.setState({
+                                      columns: columnsCopy,
+                                    });
                                   }}
                                   value={column.name}
                                 />

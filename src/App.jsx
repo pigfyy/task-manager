@@ -158,13 +158,11 @@ export default function App() {
     if (width < 768 && !isMobile) {
       setBoardListShown(false);
       setIsMobile(true);
-    } else if (width >= 768 && isMobile) {
+    } else {
       setBoardListShown(true);
       setIsMobile(false);
-    } else {
-      console.error("Unexpected error in adjusting whether to show board list");
     }
-  }, [width]);
+  }, [width, isMobile, setBoardListShown, setIsMobile]);
 
   return (
     <>

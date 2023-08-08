@@ -9,7 +9,7 @@ import {
 } from "@/lib/zustand/AppStore";
 
 export default function Board() {
-  const { columns } = useColumnStore();
+  const [columns] = useColumnStore((state) => [state.columns]);
   const [boards, selectedBoard] = useBoardStore((state) => [
     state.boards,
     state.selectedBoard,
