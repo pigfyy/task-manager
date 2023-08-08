@@ -160,7 +160,7 @@ export default function App() {
     if (width < 768 && !isMobile) {
       setBoardListShown(false);
       setIsMobile(true);
-    } else {
+    } else if (width >= 768 && isMobile) {
       setBoardListShown(true);
       setIsMobile(false);
     }
